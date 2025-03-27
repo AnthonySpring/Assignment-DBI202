@@ -1,4 +1,3 @@
--- Tạo bảng Students
 CREATE TABLE Students (
     student_id VARCHAR(8) PRIMARY KEY, 
     student_name VARCHAR(100) NOT NULL,
@@ -8,7 +7,46 @@ CREATE TABLE Students (
     email VARCHAR(100)
 );
 
--- Thêm dữ liệu vào bảng Students (140 sinh viên)
+CREATE TABLE Subjects (
+    subject_id INT PRIMARY KEY,
+    subject_name VARCHAR(100) NOT NULL,
+    credits INT
+);
+
+CREATE TABLE Teachers (
+    teacher_id INT PRIMARY KEY,
+    teacher_name VARCHAR(100) NOT NULL,
+    department VARCHAR(50),
+    email VARCHAR(100)
+);
+
+CREATE TABLE Classes (
+    class_id INT PRIMARY KEY, 
+    class_name VARCHAR(100) NOT NULL, 
+    teacher_id INT, 
+    subject_id INT, 
+    semester INT, 
+    FOREIGN KEY (teacher_id) REFERENCES Teachers(teacher_id),
+    FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
+);
+
+CREATE TABLE Grades (
+    grade_id INT PRIMARY KEY,
+    student_id VARCHAR(8),
+    subject_id INT,
+    grade DECIMAL(5,2),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+    FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
+);
+
+CREATE TABLE Student_Class (
+    student_id VARCHAR(8),
+    class_id INT,
+    PRIMARY KEY (student_id, class_id),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+    FOREIGN KEY (class_id) REFERENCES Classes(class_id)
+);
+
 INSERT INTO Students (student_id, student_name, birthdate, major, phone_number, email)
 VALUES
 ('HE190001', 'Nguyen Thi A', '2004-12-30', 'Software Engineering', '0934820269', 'a.nguyen@example.com'),
@@ -152,14 +190,6 @@ VALUES
 ('HE190139', 'Pham Van I5', '2001-12-27', 'Software Engineering', '0909013456', 'i5.pham@example.com'),
 ('HE190140', 'Nguyen Thi Z', '2003-09-14', 'Information Safety', '0934713895', 'z.nguyen@example.com');
 
--- Tạo bảng Subjects
-CREATE TABLE Subjects (
-    subject_id INT PRIMARY KEY,
-    subject_name VARCHAR(100) NOT NULL,
-    credits INT
-);
-
--- Thêm dữ liệu vào bảng Subjects
 INSERT INTO Subjects (subject_id, subject_name, credits)
 VALUES
 (1, 'Software Design', 3),
@@ -168,15 +198,6 @@ VALUES
 (4, 'Computer Networks', 4),
 (5, 'Operating Systems', 3);
 
--- Tạo bảng Teachers
-CREATE TABLE Teachers (
-    teacher_id INT PRIMARY KEY,
-    teacher_name VARCHAR(100) NOT NULL,
-    department VARCHAR(50),
-    email VARCHAR(100)
-);
-
--- Thêm dữ liệu vào bảng Teachers
 INSERT INTO Teachers (teacher_id, teacher_name, department, email)
 VALUES
 (1, 'Nguyen Thi G', 'Software Engineering', 'g.nguyen@example.com'),
@@ -185,18 +206,6 @@ VALUES
 (4, 'Pham Minh J', 'Information Safety', 'j.pham@example.com'),
 (5, 'Hoang Thi K', 'Software Engineering', 'k.hoang@example.com');
 
--- Tạo bảng Classes
-CREATE TABLE Classes (
-    class_id INT PRIMARY KEY, 
-    class_name VARCHAR(100) NOT NULL, 
-    teacher_id INT, 
-    subject_id INT, 
-    semester INT, 
-    FOREIGN KEY (teacher_id) REFERENCES Teachers(teacher_id),
-    FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
-);
-
--- Thêm dữ liệu vào bảng Classes
 INSERT INTO Classes (class_id, class_name, teacher_id, subject_id, semester)
 VALUES
 (1910, 'SE1910 - Software Design', 1, 1, 1),
@@ -205,20 +214,8 @@ VALUES
 (1913, 'SE1913 - Computer Networks', 4, 4, 1),
 (1914, 'SE1914 - Operating Systems', 5, 5, 1);
 
--- Tạo bảng Grades
-CREATE TABLE Grades (
-    grade_id INT PRIMARY KEY,
-    student_id VARCHAR(8),
-    subject_id INT,
-    grade DECIMAL(5,2),
-    FOREIGN KEY (student_id) REFERENCES Students(student_id),
-    FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
-);
-
--- Thêm dữ liệu vào bảng Grades
 INSERT INTO Grades (grade_id, student_id, subject_id, grade)
 VALUES
--- Sinh viên trong lớp 1910 (subject_id = 1, Software Design)
 (1, 'HE190001', 1, 8.5),
 (2, 'HE190002', 1, 7.0),
 (3, 'HE190003', 1, 9.0),
@@ -249,7 +246,6 @@ VALUES
 (28, 'HE190028', 1, 6.5),
 (29, 'HE190029', 1, 8.0),
 (30, 'HE190030', 1, 7.5),
--- Sinh viên trong lớp 1911 (subject_id = 2, Data Structures)
 (31, 'HE190031', 2, 9.0),
 (32, 'HE190032', 2, 6.5),
 (33, 'HE190033', 2, 8.0),
@@ -280,7 +276,6 @@ VALUES
 (58, 'HE190058', 2, 7.5),
 (59, 'HE190059', 2, 9.5),
 (60, 'HE190060', 2, 6.0),
--- Sinh viên trong lớp 1912 (subject_id = 3, Algorithms)
 (61, 'HE190061', 3, 8.5),
 (62, 'HE190062', 3, 7.0),
 (63, 'HE190063', 3, 9.0),
@@ -311,7 +306,6 @@ VALUES
 (88, 'HE190088', 3, 6.5),
 (89, 'HE190089', 3, 8.0),
 (90, 'HE190090', 3, 7.5),
--- Sinh viên trong lớp 1913 (subject_id = 4, Computer Networks)
 (91, 'HE190091', 4, 9.0),
 (92, 'HE190092', 4, 6.5),
 (93, 'HE190093', 4, 8.0),
@@ -342,7 +336,6 @@ VALUES
 (118, 'HE190118', 4, 7.5),
 (119, 'HE190119', 4, 9.5),
 (120, 'HE190120', 4, 6.0),
--- Sinh viên trong lớp 1914 (subject_id = 5, Operating Systems)
 (121, 'HE190121', 5, 8.5),
 (122, 'HE190122', 5, 7.0),
 (123, 'HE190123', 5, 9.0),
@@ -364,19 +357,8 @@ VALUES
 (139, 'HE190139', 5, 9.0),
 (140, 'HE190140', 5, 6.5);
 
--- Tạo bảng Student_Class
-CREATE TABLE Student_Class (
-    student_id VARCHAR(8),
-    class_id INT,
-    PRIMARY KEY (student_id, class_id),
-    FOREIGN KEY (student_id) REFERENCES Students(student_id),
-    FOREIGN KEY (class_id) REFERENCES Classes(class_id)
-);
-
--- Thêm dữ liệu vào bảng Student_Class (phân bổ 140 sinh viên vào 5 lớp)
 INSERT INTO Student_Class (student_id, class_id)
 VALUES
--- Lớp 1910: 30 sinh viên (HE190001 - HE190030)
 ('HE190001', 1910),
 ('HE190002', 1910),
 ('HE190003', 1910),
@@ -407,7 +389,6 @@ VALUES
 ('HE190028', 1910),
 ('HE190029', 1910),
 ('HE190030', 1910),
--- Lớp 1911: 30 sinh viên (HE190031 - HE190060)
 ('HE190031', 1911),
 ('HE190032', 1911),
 ('HE190033', 1911),
@@ -438,7 +419,6 @@ VALUES
 ('HE190058', 1911),
 ('HE190059', 1911),
 ('HE190060', 1911),
--- Lớp 1912: 30 sinh viên (HE190061 - HE190090)
 ('HE190061', 1912),
 ('HE190062', 1912),
 ('HE190063', 1912),
@@ -469,7 +449,6 @@ VALUES
 ('HE190088', 1912),
 ('HE190089', 1912),
 ('HE190090', 1912),
--- Lớp 1913: 30 sinh viên (HE190091 - HE190120)
 ('HE190091', 1913),
 ('HE190092', 1913),
 ('HE190093', 1913),
@@ -500,7 +479,6 @@ VALUES
 ('HE190118', 1913),
 ('HE190119', 1913),
 ('HE190120', 1913),
--- Lớp 1914: 20 sinh viên (HE190121 - HE190140)
 ('HE190121', 1914),
 ('HE190122', 1914),
 ('HE190123', 1914),
